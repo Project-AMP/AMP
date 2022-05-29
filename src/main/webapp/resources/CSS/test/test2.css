@@ -1,0 +1,10 @@
+@charset "UTF-8";
+#span1{
+	display: none;
+}
+#span2{
+	display: block;
+}
+#span3{
+	display: none;
+}

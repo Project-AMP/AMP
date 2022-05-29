@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.MessageMapper">
+	
+
+	<insert id="sendMessage">
+		INSERT INTO message(member,room,con,view) VALUES(#{member},#{room},#{con},#{view});
+	</insert>
+	<insert id="sendFile">
+		INSERT INTO message(member,room,con,view,file) VALUES(#{member},#{room},#{con},#{view},#{file});
+	</insert>
+	
+	<select id="selectMessage" resultType="com.jj.vo.MessageVo">
+		SELECT mem.name,mes.idx,mes.member,mes.room,mes.con,mes.date,mes.file,mes.view
+		 FROM member mem,message mes
+		 where mes.room=#{room} and mes.member=mem.idx 
+		 ORDER BY mes.date ASC ;
+	</select>
+	<select id="selectRoom" resultType="com.jj.vo.MessageVo">
+		SELECT room_idx,room_title,room_class,room_member,
+		(SELECT con FROM message mes where mes.room=room_idx ORDER BY mes.date DESC limit 1) as con,
+		(SELECT date FROM message mes where mes.room=room_idx ORDER BY mes.date DESC limit 1) as date,
+		(SELECT name FROM member mem,message mes where mes.room=room_idx and mes.member=mem.idx ORDER BY mes.date DESC limit 1) as name,
+		(SELECT count(idx) FROM message where room =room_idx and view like '%@${member}@%') as view_count
+		FROM message_room 
+		where room_member like '%@${member}@%' ORDER BY date DESC;
+	</select>
+	<select id="selectRoomName" resultType="com.jj.vo.MessageVo">
+		select room_title,room_member from message_room where room_idx=#{room_idx};
+	</select>
+	<select id="selectRoomMember" resultType="String">
+		select room_member from message_room where room_idx = #{room_idx};
+	</select>
+	<select id="selectIdxView" resultType="com.jj.vo.MessageVo">
+		select idx,view from message where room = #{room} and view like '%@${member}@%';
+	</select>
+	<update id="updateView">
+		UPDATE message SET view=#{view} WHERE idx=#{idx};
+	</update>
+
+	<select id="isMyRoom" resultType="int">
+		select count(room_idx) from message_room where room_member like '%@${member}@%' and room_idx = #{room_idx};
+	</select>
+	<select id="hasNewMessage" resultType="int">
+		select count(idx) from message where view like '%@${member}@%' ;
+	</select>
+	<select id='myAC'>
+		select
+		a.idx as academy_idx,
+		a.name as academy_name,
+		c.idx as class_idx,
+		c.name as class_name
+		from
+		class_member cm,class c,room r,academy a
+		where cm.member=#{member} and 
+		cm.class = c.idx and
+		c.room = r.idx and
+		r.academy= a.idx		
+	</select>
+	<select id='myAcademy' resultType="com.jj.vo.MessageVo">
+		select
+		a.idx as academy_idx,
+		a.name as academy_name
+		from
+		academy a,academy_member am
+		where am.member=#{member} and
+		am.academy = a.idx
+		group by academy_idx
+	</select>
+	<select id='myClass' resultType="com.jj.vo.MessageVo">
+		select
+		r.academy as academy_idx,
+		c.idx as class_idx,
+		c.name as class_name
+		from
+		class_member cm,class c,room r
+		where cm.member=#{member} and 
+		c.room=r.idx and
+		cm.class=c.idx	
+	</select>
+	<select id="selectMembers" resultType="com.jj.vo.MessageVo">
+		select
+		m.idx as member_idx,
+		(if(c.teacher=m.idx,concat(m.name,'(강사)'),m.name )) as member_name
+		from
+		class_member cm,member m,class c
+		where cm.class=#{classIdx} and cm.member=m.idx and c.idx=#{classIdx} and
+		not cm.member=#{member}
+		
+	</select>
+	<insert id="makeRoom"  parameterType="com.jj.vo.MessageVo" useGeneratedKeys="true" keyProperty="room_idx" >
+		insert into message_room(room_title,room_class,room_member) value(#{room_title},#{room_class},#{room_member});
+	</insert>
+
+</mapper>

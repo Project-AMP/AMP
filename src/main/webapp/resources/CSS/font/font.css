@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* @font-face{font-family: 'NanumBarunGothic'; src:url(resources/CSS/font/NanumBarunGothic.ttf);}
+*{font-family:NanumBarunGothic} */
+
+/* @font-face{font-family: 'NanumSquare_acR'; src:url(resources/CSS/font/NanumSquare_acR.ttf);}
+*{font-family:NanumSquare_acR} */
+
+@font-face{font-family: 'NanumGothic'; src:url(resources/CSS/font/NanumGothic.ttf);}
+*{font-family:NanumGothic}
+
+/* @font-face{font-family: 'test'; src:url(resources/CSS/font/test.ttf);}
+*{font-family:test} */

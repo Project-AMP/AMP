@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.AcademyMapper">
+	
+	<select id="selectIdxById" resultType="com.jj.vo.AcademyVo">
+		SELECT * FROM member where id=#{id} ;
+	</select>
+	<select id="selectTag" resultType="com.jj.vo.AcademyVo">
+		SELECT * FROM academy where tag like '%${keyword}%' ;
+	</select>
+	<select id="searchbar" resultType="com.jj.vo.AcademyVo">
+		select * from
+	(select DISTINCT SUBSTRING_INDEX (SUBSTRING_INDEX(tag,',',numbers.n),',',-1)  tag from 
+   (select  1 n union  all  select 2  
+    union  all  select  3  union  all select 4 
+    union  all  select  5  union  all  select  6
+    union  all  select  7  union  all  select  8 
+    union  all  select  9 union  all  select  10) numbers INNER  JOIN academy  
+    on CHAR_LENGTH ( tag )  - CHAR_LENGTH ( REPLACE ( tag ,  ',' ,  '' ) )>= numbers . n-1) as h 
+    where tag like '%${keyword}%'
+	</select>
+	<select id='selectName' resultType="String">
+	select name from academy where idx=#{academyidx};
+	</select>
+	
+<!-- 	<insert id="insert">
+		INSERT INTO name_table(name) VALUES(#{name});
+	</insert>
+	
+	<update id="update">
+		UPDATE name_table SET name=#{name} WHERE idx=#{idx};
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM name_table WHERE (idx = #{idx});
+	</delete>  -->
+
+
+</mapper>

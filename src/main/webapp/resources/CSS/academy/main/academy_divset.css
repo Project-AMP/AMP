@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+.Biggroup{
+width: 100%; 
+/* border: 1px solid blue;  */
+min-height: calc(100vh - 215px); 
+display: flex; 
+justify-content: center;
+}
+.Smallgroup{
+display: flex; 
+justify-content: center; 
+/* border: 1px solid yellow;  */
+width:100%; 
+max-width: 1300px; 
+min-width:500px; 
+min-height: 700px;
+}
+
+
+
+#class_sidebarDiv{
+/* border: 1px solid green;  */
+width: 300px;
+}
+#my_info_sidebarDiv{
+/* border: 1px solid green;  */
+width: 300px;
+}
+#my_info_sidebarDiv li {
+	list-style: none 
+}
+#adminDiv{
+/* border: 1px solid green;  */
+width: 300px;
+}
+#adminDiv li {
+	list-style: none 
+}

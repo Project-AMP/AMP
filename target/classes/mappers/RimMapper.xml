@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.RimMapper">
+	
+	<!-- 강사 목록 가져오기 -->
+	<select id="selectTeacherList" resultType="com.jj.vo.RimVo">
+		select distinct m.idx, m.name, m.id, m.phone, m.email, m.address
+		
+		FROM member m, academy a, academy_member am, 
+		(select * from academy_member where ranking='T' and academy = #{academy_idx}) T1
+		
+		WHERE am.academy = #{academy_idx}
+		and T1.ranking = 'T'
+		and m.idx = T1.member;
+	</select>
+	
+	
+	<!-- 선택한 강사 삭제하기 -->
+	<delete id="deleteTeacher" parameterType="java.util.HashMap">
+		delete from academy_member
+		
+		where  
+			academy = #{academy_idx}
+			and ranking = 'T'
+			and member in
+			<foreach collection="teacher_idx_list" item="item" separator="," index="index" open="(" close=")">
+				#{item}
+			</foreach>
+	</delete>
+	
+	
+	
+	
+	
+	<!-- 수강생 목록 가져오기 -->
+	<select id="selectMemberList" resultType="com.jj.vo.RimVo">
+		select distinct m.idx, m.name, m.id, m.phone, m.email, m.address
+		
+		FROM member m, academy a, academy_member am, 
+		(select * from academy_member where ranking='S' and academy = #{academy_idx}) T1
+		
+		WHERE am.academy = #{academy_idx}
+		and T1.ranking = 'S'
+		and m.idx = T1.member;
+	</select>
+	
+	
+	
+	
+	<!-- 선택한 수강생 삭제하기 -->
+	<delete id="deleteMember" parameterType="java.util.HashMap">
+		delete from academy_member
+		
+		where  
+			academy = #{academy_idx}
+			and ranking = 'S'
+			and member in
+			<foreach collection="member_idx_list" item="item" separator="," index="index" open="(" close=")">
+				#{item}
+			</foreach>
+	</delete>
+	
+	<!-- 강사 목록 검색 -->
+	<select id="selectTeacherList_search" parameterType="java.util.Map" resultType="com.jj.vo.RimVo">
+		select distinct m.idx, m.name, m.id, m.phone, m.email, m.address
+		
+		FROM member m, academy a, academy_member am, 
+		(select * from academy_member where ranking=#{TS} and academy = #{academy_idx}) T1
+		
+		WHERE am.academy = #{academy_idx}
+		and T1.ranking = #{TS}
+		and m.idx = T1.member
+		
+		<choose>
+			<when test="id_name == 2">
+				and m.id like '%${content}%';
+			</when>
+			<when test="id_name == 3">
+				and m.name like '%${content}%';
+			</when>
+		</choose>
+		
+		
+		
+		
+    	
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

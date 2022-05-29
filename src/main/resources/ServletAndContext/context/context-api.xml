@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+	http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+	"	
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	>
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+			
+		<bean id="kLog" class="com.jj.api.KakaoLog"></bean>
+		<bean id="nLog" class="com.jj.api.NaverLog"></bean>
+		<bean id="gLog" class="com.jj.api.GoogleLog"></bean>
+		<bean id="fLog" class="com.jj.api.FacebookLog"></bean>
+		
+		
+</beans>

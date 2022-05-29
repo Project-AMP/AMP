@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+	http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+	"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring">
+
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	<!-- db 객체 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.cj.jdbc.Driver"></property>
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/jjdb?characterEncoding=UTF-8&amp;serverTimezone=UTC"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="mysql"></property>
+	</bean>
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation"
+			value="classpath:/mybatis-config.xml" />
+		<property name="mapperLocations"
+			value="classpath:mappers/**/*Mapper.xml" />
+	</bean>
+	<bean id="sqlSession"
+		class="org.mybatis.spring.SqlSessionTemplate"
+		destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory"
+			ref="sqlSessionFactory"></constructor-arg>
+	</bean>
+
+
+	<!-- dao 객체 -->
+	<bean id="dao" class="com.jj.dao.TestDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="memberDao" class="com.jj.dao.MemberDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="messageDao" class="com.jj.dao.MessageDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="academyDao" class="com.jj.dao.AcademyDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="academyMemberDao" class="com.jj.dao.AcademyMemberDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="findidpwDao" class="com.jj.dao.FindidpwDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="classDao" class="com.jj.dao.ClassDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="classMemberDao" class="com.jj.dao.ClassMemberDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="roomDao" class="com.jj.dao.RoomDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+	<bean id="consultDao" class="com.jj.dao.ConsultDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"></constructor-arg>
+	</bean>
+
+	<bean id="noticeDao" class="com.jj.dao.NoticeDao" >
+		<constructor-arg name="sqlSession" ref="sqlSession" />
+	</bean>
+	<bean id="rankDao" class="com.jj.dao.RankDao" >
+		<constructor-arg name="sqlSession" ref="sqlSession" />
+	</bean>
+	<bean id="couponDao" class="com.jj.dao.CouponDao" >
+		<constructor-arg name="sqlSession" ref="sqlSession" />
+	</bean>
+	<bean id="rimDao" class="com.jj.dao.RimDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	<bean id="mainserviceDao" class="com.jj.dao.MainserviceDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	<bean id="eventDao" class="com.jj.dao.EventDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	<bean id="reviewDao" class="com.jj.dao.ReviewDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	<bean id="academyStyleDao" class="com.jj.dao.AcademyStyleDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	<bean id="checkDao" class="com.jj.dao.CheckDao">
+		<constructor-arg name="sqlSession" ref="sqlSession"/>
+	</bean>
+	
+	<!-- Vo 객체 -->
+	<bean id="vo" class="com.jj.vo.TestVo"/>
+	<bean id="memberVo" class="com.jj.vo.MemberVo"/>
+	<bean id="messageVo" class="com.jj.vo.MessageVo"/>
+	<bean id="academyVo" class="com.jj.vo.AcademyVo"/>
+	<bean id="academyMemberVo" class="com.jj.vo.AcademyMemberVo"/>
+	<bean id="findidpwVo" class="com.jj.vo.FindidpwVo"/>
+	<bean id="classVo" class="com.jj.vo.ClassVo"/>
+	<bean id="classMemberVo" class="com.jj.vo.ClassMemberVo"/>
+	<bean id="roomVo" class="com.jj.vo.RoomVo"/>
+	<bean id="consultVo" class="com.jj.vo.ConsultVo"/>
+	<bean id="noticeVo" class="com.jj.vo.NoticeVo" />
+	<bean id="searchRankVo" class="com.jj.vo.SearchRankVo" />
+	<bean id="academyRankVo" class="com.jj.vo.AcademyRankVo" />
+	<bean id="couponVo" class="com.jj.vo.CouponVo" />
+	<bean id="myAlarmListVo" class="com.jj.vo.MyAlarmListVo" />
+	<bean id="rimVo" class="com.jj.vo.RimVo" />
+	<bean id="mainserviceVo" class="com.jj.vo.MainserviceVo" />
+	<bean id="eventVo" class="com.jj.vo.EventVo" />
+	<bean id="reviewVo" class="com.jj.vo.ReviewVo" />
+	<bean id="academyStyleVo" class="com.jj.vo.AcademyStyleVo" />
+	<bean id="checkVo" class="com.jj.vo.CheckVo" />
+</beans>

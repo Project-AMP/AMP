@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.couponMapper">
+	
+	<insert id="makeCoupon1">
+		insert into coupon(academy,code,name,sale,s_date,e_date,u_date,num,g,c) value(#{academy},#{code},#{name},#{sale},#{s_date},#{e_date},#{u_date},#{num},0,0)
+	</insert>
+	<insert id="makeCoupon2">
+		insert into coupon(academy,code,name,sale,s_date,e_date,u_date,num,g,c) value(#{academy},#{code},#{name},#{sale},#{s_date},#{e_date},#{u_date},1,1,0)
+	</insert>
+	<select id="adminCouponList" resultType="com.jj.vo.CouponVo">
+		select idx,group_concat(idx) as g_idx,group_concat(code) as code,name,
+		sale,DATE_FORMAT(s_date,'%Y/%m/%d') as s_date,
+		DATE_FORMAT(e_date,'%Y/%m/%d') as e_date,DATE_FORMAT(u_date,'%Y/%m/%d') as u_date,
+		DATE_FORMAT(date,'%Y/%m/%d') as date,num,g,c
+		from coupon c 
+		where academy=#{academyidx} 
+		group by name,g,s_date,e_date,u_date,sale,num 
+		order by c.date desc;
+	
+	</select>
+	<select id="myCouponList" resultType="com.jj.vo.CouponVo">
+		select 
+		cm.idx as m_idx,cm.coupon as m_coupon,DATE_FORMAT(cm.date,'%Y/%m/%d') as m_date,cm.member as m_member,
+		c.idx,c.academy,c.name,c.sale,DATE_FORMAT(c.u_date,'%Y/%m/%d') as u_date
+		from coupon c , coupon_member cm
+		where c.academy=#{academy} and cm.member=#{member} and cm.coupon=c.idx
+		order by c.date desc;
+	
+	</select>
+	<select id="myCouponListAll" resultType="com.jj.vo.CouponVo">
+		select 
+		cm.idx as m_idx,cm.coupon as m_coupon,DATE_FORMAT(cm.date,'%Y/%m/%d') as m_date,cm.member as m_member,
+		c.idx,c.academy,c.name,c.sale,DATE_FORMAT(c.u_date,'%Y/%m/%d') as u_date,a.name as academy_name
+		from coupon c , coupon_member cm , academy a
+		where  cm.member=#{member} and cm.coupon=c.idx and c.academy = a.idx
+		order by c.date desc;
+	
+	</select>
+	<select id="isCoupon" resultType="com.jj.vo.CouponVo">
+		select 
+		idx, (select if(date_sub(now(),interval 0 day)>e_date,"1","0")) as finished
+		from coupon 
+		where code=#{code} and academy=#{academyidx}
+	</select>
+	<select id="hasCoupon" resultType="int">
+		select 
+		count(idx)
+		from coupon_member 
+		where coupon=#{coupon} and member=#{member}
+	</select>
+	<insert id="addCouponMember">
+		insert coupon_member(coupon,member) value(#{coupon},#{member});
+	</insert>
+	<delete id="deleteCoupon">
+		Delete from coupon where idx=#{idx};
+	</delete>
+	
+<!-- 	<insert id="insert">
+		INSERT INTO name_table(name) VALUES(#{name});
+	</insert>
+	
+	<update id="update">
+		UPDATE name_table SET name=#{name} WHERE idx=#{idx};
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM name_table WHERE (idx = #{idx});
+	</delete>  -->
+
+
+</mapper>

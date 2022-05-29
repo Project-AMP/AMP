@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.reviewMapper">
+	
+	<!-- 댓글 목록 -->
+	<select id="select" resultType="com.jj.vo.ReviewVo">
+		SELECT a.idx, a.con, a.date, m.name
+		FROM academy_review a, member m
+		WHERE m.idx = a.writer
+		ORDER BY date DESC;
+	</select>
+	
+	<insert id="insertReview" parameterType="com.jj.vo.ReviewVo">
+		INSERT INTO academy_review(academy,con,writer)
+		VALUES(#{academy},#{con},#{writer})
+	</insert>
+
+	<delete id="deleteReview">
+		DELETE FROM academy_review WHERE (idx = #{idx});
+	</delete>
+	
+	<!-- <select id="countReview" resultType="com.jj.vo.ReviewVo">
+		SELECT * FROM academy_review;
+	</select> -->
+	
+	<!-- <insert id="insertReview" parameterType="com.jj.vo.ReviewVo">
+  		
+  		<![CDATA[
+  			insert INTO academy_reivew(academy,grp,grps,grpl,con,date,writer) 
+  			values(#{academy},#{grp},#{grps},#{grpl},#{con},now(),#{writer};
+		]]>
+		<selectKey keyProperty="idx" resultType="Integer">
+        	SELECT LAST_INSERT_ID() from academy_review limit 1;
+    	</selectKey>
+    	
+  	</insert> -->
+	
+<!-- 	<insert id="reviewinsert">
+		INSERT INTO academy_review(name) VALUES(#{name});
+	</insert>
+	
+	<update id="reviewupdate">
+		UPDATE academy_review SET name=#{name} WHERE idx=#{idx};
+	</update>
+	 -->
+	 
+</mapper>

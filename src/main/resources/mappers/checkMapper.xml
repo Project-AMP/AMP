@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.checkMapper">
+	
+	<select id="selectByStudent" resultType="com.jj.vo.CheckVo">
+		SELECT c.idx as idx , c.date as date , c.member as member ,
+		c.class_idx as class_idx , c.state as state , m.name as name 
+		FROM checkTable c , member m 
+		where c.member=#{member} and c.class_idx = #{class_idx} and m.idx =#{member} ;
+	</select>
+	<select id="selectByTeacher" resultType="com.jj.vo.CheckVo">
+		SELECT c.idx as idx , c.date as date , c.member as member ,
+		c.class_idx as class_idx , c.state as state 
+		FROM checkTable c 
+		where c.class_idx = #{class_idx};
+	</select>
+	<insert id="insert">
+		insert into checktable (date,member,class_idx,state) value(#{date},#{member},#{class_idx},#{state})
+	</insert>
+	<update id="update">
+		update checktable set state=#{state} where date = #{date} and member=#{member} and class_idx = #{class_idx}
+	</update>
+	<select id="hasCon" resultType="int">
+		select count(idx) from checktable where date = #{date} and member=#{member} and class_idx = #{class_idx}
+	</select>
+	
+<!-- 	<insert id="insert">
+		INSERT INTO name_table(name) VALUES(#{name});
+	</insert>
+	
+	<update id="update">
+		UPDATE name_table SET name=#{name} WHERE idx=#{idx};
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM name_table WHERE (idx = #{idx});
+	</delete>  -->
+
+
+</mapper>

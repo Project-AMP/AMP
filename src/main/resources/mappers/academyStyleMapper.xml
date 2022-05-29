@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.academyStyleMapper">
+	<select id="select_banner" resultType="com.jj.vo.AcademyStyleVo">
+		select 
+		idx,academy,top_img,top_img_size,font_col,hover_col,back_col,top_font_size,font,main_img,main_size 
+		from academy_style 
+		where academy = #{academy};
+	</select>
+	<insert id="save_banner" parameterType="com.jj.vo.AcademyStyleVo">
+		INSERT INTO academy_style(academy,top_img,top_img_size,font_col,hover_col,back_col,top_font_size,font) 
+		VALUES(#{academy},#{top_img},#{top_img_size},#{font_col},#{hover_col},#{back_col},#{top_font_size},#{font});
+	</insert>
+	<update id="update_banner">
+		UPDATE academy_style 
+		SET top_img = #{top_img} , top_img_size = #{top_img_size} ,  font_col = #{font_col} , 
+		hover_col = #{hover_col} , back_col = #{back_col} , top_font_size = #{top_font_size} , font=#{font}
+		where academy=#{academy};
+	</update>
+	<insert id="save_notImg_banner" parameterType="com.jj.vo.AcademyStyleVo">
+		INSERT INTO academy_style(academy,top_img_size,font_col,hover_col,back_col,top_font_size,font) 
+		VALUES(#{academy},#{top_img_size},#{font_col},#{hover_col},#{back_col},#{top_font_size},#{font});
+	</insert>
+	<update id="update_notImg_banner">
+		UPDATE academy_style 
+		SET top_img_size = #{top_img_size} ,  font_col = #{font_col} , 
+		hover_col = #{hover_col} , back_col = #{back_col} , top_font_size = #{top_font_size} , font=#{font}
+		where academy=#{academy};
+	</update>
+	
+	
+	<insert id="save_main" parameterType="com.jj.vo.AcademyStyleVo">
+		INSERT INTO academy_style(academy,main_img,main_size) 
+		VALUES(#{academy},#{main_img},#{main_size});
+	</insert>
+	<update id="update_main">
+		UPDATE academy_style 
+		SET main_img = #{main_img} , main_size = #{main_size}
+		where academy=#{academy};
+	</update>
+	<insert id="save_notImg_main" parameterType="com.jj.vo.AcademyStyleVo">
+		INSERT INTO academy_style(academy,main_size) 
+		VALUES(#{academy},#{main_size});
+	</insert>
+	<update id="update_notImg_main">
+		UPDATE academy_style 
+		SET main_size = #{main_size} 
+		where academy=#{academy};
+	</update>
+</mapper>

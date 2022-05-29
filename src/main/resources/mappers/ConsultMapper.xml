@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.ConsultMapper">
+	
+	<insert id="insertConsult">
+		INSERT INTO consult(classidx,stuname,phone,coment,state) VALUES(#{classidx},#{stuname},#{phone},#{coment},0);
+	</insert>
+	<select id="selectBystuname" resultType="com.jj.vo.ConsultVo">
+		SELECT * FROM consult where stuname=#{stuname};
+	</select>
+	<select id="selectByConsult" resultType="com.jj.vo.ConsultVo">
+		SELECT idx FROM consult where academy=#{academy};
+	</select>
+	<select id="consultList" resultType="com.jj.vo.ConsultVo">
+		SELECT 
+		con.idx,con.stuname,con.phone,con.classidx,con.coment,DATE_FORMAT(con.date,'%Y/%m/%d %H:%m') as date,con.state,
+		c.name as class_name		 
+		FROM consult con,class c,room r
+		where r.academy=#{academy} and c.room=r.idx and con.classidx=c.idx
+		and con.state like '%${state}%' and (con.coment like '%${keyword}%' or con.stuname like '%${keyword}%')
+	</select>
+	<update id="updateState">
+		UPDATE consult SET state = 1 where idx=#{idx};
+	</update>
+
+</mapper>

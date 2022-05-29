@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.findidpwMapper">
+	
+	<select id="selectById" resultType="com.jj.vo.FindidpwVo">
+		select id FROM member where name=#{name} and phone=#{phone};
+	</select>
+	
+	<update id="updatePw">
+		UPDATE member SET pw = #{updatepw} where id=#{updateid};
+	</update>
+	
+	<select id="selectid" parameterType="string" resultType="string">
+		select id FROM member where id=#{id};
+	</select>
+	
+	<select id="selectpw" resultType="com.jj.vo.FindidpwVo">
+		select id, phone FROM member where id=#{id} and phone=#{phone};
+	</select>
+	
+</mapper>

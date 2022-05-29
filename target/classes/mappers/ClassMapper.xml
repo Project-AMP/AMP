@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.ClassMapper">
+	
+	<select id="selectIdx" resultType="com.jj.vo.ClassVo">
+		SELECT * FROM class where idx=#{idx};
+	</select>
+	<select id="selectName" resultType="com.jj.vo.ClassVo">
+		SELECT c.name,c.time,c.price,c.idx,m.name as teacher_name FROM class c,member m where room=#{room} and m.idx=c.teacher;
+	</select>
+	<select id="selectClass" resultType="com.jj.vo.ClassVo">
+		select idx , name , room , time , s_date , e_date , teacher , price , limited , kategorie
+		from class
+		where idx= #{classIdx} 
+	</select>
+	<select id="myClassList" resultType="com.jj.vo.ClassVo">
+		select c.idx,c.name,c.room,c.time,DATE_FORMAT(c.s_date,'%Y/%m/%d') as s_date,
+		DATE_FORMAT(c.e_date,'%Y/%m/%d') as e_date,c.teacher,c.price,c.limited , DATE_FORMAT(cm.date,'%Y/%m/%d') as date ,
+		r.name as room_name,m.name as teacher_name
+		,(select if(date_sub(now(),interval 0 day)>e_date,"1","0")) as finished,
+		cm.sale
+		from class c ,class_member cm ,room r,member m 
+		where cm.class = c.idx
+		and m.idx= c.teacher and r.idx=c.room
+		and cm.member=#{member} and r.academy=#{academy}
+		order by date desc
+	</select>
+	<select id="myClassListAll" resultType="com.jj.vo.ClassVo">
+		select c.idx,c.name,c.room,c.time,DATE_FORMAT(c.s_date,'%Y/%m/%d') as s_date,
+		DATE_FORMAT(c.e_date,'%Y/%m/%d') as e_date,c.teacher,c.price,c.limited , DATE_FORMAT(cm.date,'%Y/%m/%d') as date ,
+		r.name as room_name,m.name as teacher_name
+		,(select if(date_sub(now(),interval 0 day)>e_date,"1","0")) as finished,
+		cm.sale,
+		a.name as academy_name,
+		r.academy as academy
+		from class c ,class_member cm ,room r,member m ,academy a
+		where cm.class = c.idx
+		and m.idx= c.teacher and r.idx=c.room
+		and cm.member=#{member} and r.academy = a.idx
+		order by date desc
+	</select>
+	
+	<select id="getPaymentList" resultType="com.jj.vo.ClassVo">
+		select c.idx,c.name,c.time,
+		DATE_FORMAT(c.e_date,'%Y/%m/%d') as e_date,
+		c.price, DATE_FORMAT(cm.date,'%Y/%m/%d') as date ,
+		m.name as member_name
+		,(select if(date_sub(now(),interval 0 day)>e_date,"1","0")) as finished,
+		cm.sale
+		from class c ,class_member cm ,room r,member m 
+		where cm.class = c.idx
+		and r.idx=c.room
+		and cm.member=m.idx 
+		and r.academy=#{academyidx}
+		order by date desc
+	</select>
+	<select id="getClassList" resultType="com.jj.vo.ClassVo">
+		select distinct
+		c.idx,c.name,c.room,c.time,c.s_date,c.e_date,c.teacher,c.price,c.limited,c.kategorie,
+		r.name as room_name,
+		m.name as teacher_name
+		
+		from class c, room r, member m, class_member cm
+		
+		WHERE 
+		m.idx=c.teacher 
+		and r.idx = c.room 
+		and r.academy=#{academy} 
+		and c.kategorie like '%${kategorie}%' 
+		and c.name like '%${name}%'
+		and c.idx NOT IN 
+		(select distinct c.idx 
+		from class c, class_member cm, room r
+		where r.academy = #{academy}
+		and cm.member = #{member}
+		and c.idx = cm.class )
+		
+		order by idx asc
+		limit #{start},#{end};
+	</select>
+	
+	
+	<!-- 총 게시글 갯수 출력 -->
+	<select id="countClassList" resultType = "int">
+		select count(distinct c.idx) as count
+		
+		from class c, room r, member m, class_member cm
+		
+		WHERE 
+		m.idx=c.teacher 
+		and r.idx = c.room 
+		and r.academy=#{academy} 
+		and c.kategorie like '%${kategorie}%' 
+		and c.name like '%${name}%'
+		and c.idx NOT IN 
+		(select distinct c.idx 
+		from class c, class_member cm, room r
+		where r.academy = #{academy}
+		and cm.member = #{member}
+		and c.idx = cm.class );
+	</select>
+	
+	
+	<select id="getKategories" resultType="com.jj.vo.ClassVo">
+		select distinct 
+		c.kategorie
+		from class c,room r
+		where r.academy=#{academy} and c.room=r.idx
+	</select>
+	
+	<!-- 회원의 쿠폰리스트를 가져온다 -->
+	<select id="selectMyCoupon" resultType="com.jj.vo.CouponVo">
+		select c.code, c.name, c.sale
+		from coupon c, coupon_member cm
+		where c.idx = cm.coupon
+		and c.e_date > now()
+		and c.academy = #{academy_idx}
+		and cm.member = #{member_idx};
+	</select>
+	
+	
+	<!-- 회원 수강신청 -->
+	<insert id="insertclass">
+		insert into class_member(class, member, date, sale) values(#{classIdx}, #{member_idx}, now(), #{sale})
+	</insert>
+	
+	
+	
+	<!-- 관리자 수강정보 관리 -->
+	<select id="adminClassList" resultType="com.jj.vo.ClassVo">
+		SELECT distinct c.idx, c.name, c.time, c.room, c.s_date, c.e_date, c.price, c.limited, c.Kategorie, r.name, c.teacher
+		FROM class c, room r
+		WHERE r.academy = #{academyidx}
+		AND c.room = r.idx;
+	</select>
+	
+	
+	<!-- 강의실 조회 -->
+	<select id="adminRoomList" resultType="com.jj.vo.ClassVo">
+		SELECT *
+		FROM room
+		WHERE academy = #{academyidx}
+	</select>
+	
+	
+	<!-- 강사조회 -->
+	<select id="adminTeacherList" resultType="com.jj.vo.ClassVo">
+		SELECT distinct m.idx, m.name
+		FROM member m, (select * from academy_member
+					 where academy = #{academyidx}
+					 and ranking = 'T')T1
+		WHERE T1.member = m.idx;
+	</select>
+
+	
+	<!-- 관리자 - 수강 개설 -->
+	<insert id="adminClassInsert" parameterType="java.util.Map">
+		INSERT INTO class(name, room, time, s_date, e_date, teacher, price, limited, Kategorie)
+		VALUES(#{name}, #{roomidx}, #{time}, #{s_date}, #{e_date}, #{teacheridx}, #{price}, #{limited}, #{kategori});
+	</insert>
+
+	<!-- 관리자 - 수강 폐지 -->
+	<delete id="deleteclass" parameterType="java.util.HashMap">
+		delete from class
+		
+		where idx in
+			<foreach collection="class_idx_list" item="item" separator="," index="index" open="(" close=")">
+				#{item}
+			</foreach>
+	</delete>
+	
+	<!-- 관리자 - 수강수정 -->
+	<update id="admin_class_update"  parameterType="java.util.Map">
+		update class set name = #{class_name},
+				 room = #{select_room}, 
+                 time= #{class_time_date},
+                 s_date=#{class_date_s},
+                 e_date=#{class_date_e},
+                 teacher=#{select_teacher},
+                 price=#{class_price},
+                 limited=#{class_limit},
+                 Kategorie = #{class_category}
+		where idx = #{classidx};
+	</update>
+	
+	
+	
+</mapper>

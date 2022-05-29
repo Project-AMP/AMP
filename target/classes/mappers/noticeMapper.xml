@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.jj.mappers.noticeMapper">
+  
+	<select id="selectIdx" parameterType="string" resultType="int">
+  		select idx from academy where name = #{name};
+  	</select>
+  	
+  	<update id="viewUp" parameterType="int">
+  		update notice set view=view+1 where idx= #{idx};
+  	</update>
+  	
+  	<insert id="insertNotice" parameterType="com.jj.vo.NoticeVo">
+  		
+  		<![CDATA[
+  			insert INTO notice(num,title,academy,date,con,view,file) 
+  			values(#{num},#{title},#{academy},now(),#{con},0,null);
+		]]>
+		<selectKey keyProperty="idx" resultType="Integer">
+        	SELECT LAST_INSERT_ID() from notice limit 1;
+    	</selectKey>
+    	
+  	</insert>
+  	
+		
+  	<!-- 공지사항 전체목록 가져오기 -->
+  	<select id="selectList" parameterType="java.util.Map" resultType="com.jj.vo.NoticeVo">		
+		select idx,num,title,academy,date_format(date, '%Y-%m-%d')as date,con,view,file,no
+  		from( select *,rank() over( order by idx desc ) as no 
+		from notice as no
+		where academy = #{academy}  
+		<if test='condition=="0"'>
+		and (title like '%${keyword}%' or con like '%${keyword}%')
+		</if>
+		<if test='condition=="1"'>
+		and title like '%${keyword}%'
+		</if>
+		<if test='condition=="2"'>
+		and con like '%${keyword}%'
+		</if>
+		) as no 
+		where no between ${start} and ${end}
+		order by no asc;
+  	</select>
+  	
+  	
+  	<!-- 전체게시물 수 조회 -->
+	<select id="notice_count" resultType="int">
+		select count(*) from notice where academy = #{academy}
+		<if test='condition=="0"'>
+			and (title like '%${keyword}%' or con like '%${keyword}%')
+		</if>
+		<if test='condition=="1"'>
+			and title like '%${keyword}%'
+		</if>
+		<if test='condition=="2"'>
+			and con like '%${keyword}%'
+		</if>
+	</select>
+  	
+  	
+  	<!-- 공지사항 상세보기 -->
+  	<select id="notice_detail" parameterType="java.util.Map" resultType="com.jj.vo.NoticeVo">
+  		select * from notice where idx = #{idx};
+  	</select>
+  	
+  	<!-- 공지사항 글 삭제 -->
+  	<delete id="notice_delete" parameterType="java.util.Map">
+  		delete from notice where idx= #{idx};
+  	</delete>
+  	
+  	
+  	<!-- 공지사항 글 수정 정보 얻어오기 -->
+  	<select id="select_update_notice" resultType="com.jj.vo.NoticeVo">
+  		select * from notice where idx = #{idx};
+  	</select>
+  	
+  	<!-- 공지사항 글 수정하기 -->
+  	<update id="notice_update" parameterType="com.jj.vo.NoticeVo">
+  		update notice set title=#{title}, con=#{con} where idx=#{idx};
+  	</update>
+  	
+  	
+  	
+  	
+  <!-- 학원 idx를 가지고 학원 이름 조회 -->
+  	<select id="selectAcademyName" parameterType="int" resultType="string">
+  		select name from academy where idx = #{notice_academyidx}
+  	</select>
+  	
+  	<!-- 해당 학원을 즐겨찾기 한 사람 + 수강생 및 강사를 조회 -->
+  	<select id="selectMembers" parameterType="int" resultType="string">
+  		select member from jjdb.academy_member where academy = #{notice_academyidx}
+		union
+		select member from jjdb.academy_bookmark where academy = #{notice_academyidx}
+		order by 1;
+  	</select>
+  	
+  	
+  	<!-- list에 있는 값(idx)을 가지고 academy_alarm에 저장 -->
+  	<insert id="insertMembers" parameterType="java.util.HashMap">
+  		<if test="staffList.size != 0">
+	        insert into notice_alarm(
+	            member,
+	            academy,
+	            content,
+	            date
+	        )values
+	        <foreach collection="staffList" item="item" separator=",">
+	        (
+	            #{item.member},
+	            #{academy_idx},
+	            #{content},
+	            now()
+	        )
+	        </foreach>
+    	</if>
+  	</insert>
+  	
+  	<!-- 즐겨찾기 한 회원인지 아닌지 조회(공지사항 알림관련) -->
+  	<select id="selectbookmark" parameterType="java.util.HashMap" resultType="string">
+  		select member from academy_bookmark where member = #{member} and academy = #{academy_idx};
+  	</select>
+  	
+  	<!-- 해당 학원의 수강생 및 강사인지 아닌지 조회(공지사항 알림관련) -->
+  	<select id="selectacademy_member" parameterType="java.util.HashMap" resultType="string">
+  		select member from academy_member where member = #{member} and academy = #{academy_idx};
+  	</select>
+  	
+  	
+  	<!-- 본인이 즐겨찾기 했거나 수강생 또는 강사일때 공지사항알람 리스트 조회 -->
+  	<select id="selectMyAlarmList" parameterType="int" resultType="com.jj.vo.MyAlarmListVo">
+  		select na.idx as idx,
+  		n.title as notice_title,
+  		n.idx as notice_idx,
+  		a.idx as academy,
+  		a.name as notice_academy_name
+  		from notice_alarm na , notice n ,academy a
+  		where na.member = #{user_idx} and
+  		na.content = n.idx and n.academy=a.idx
+  		order by na.date desc;
+  	</select>
+  	
+  	
+  	<!-- 공지사항의 idx를 가지고 제목을 조회 -->
+  	<select id="select_Notice_title" parameterType="int" resultType="string">
+  		select title from notice where idx = #{noticeidx};
+  	</select>
+  	
+  </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

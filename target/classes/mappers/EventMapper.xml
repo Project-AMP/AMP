@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.jj.mappers.EventMapper">
+	
+	<select id="select" resultType="com.jj.vo.EventVo">
+		SELECT idx,title FROM event order by idx desc;
+	</select>
+
+
+	<insert id="insertEvent" parameterType="com.jj.vo.EventVo">
+  		INSERT INTO event(num,title,date,con,view,file,picture,tag) 
+  		values(0,#{title},now(),#{con},0,null,null,null);
+  	</insert>
+  	
+  	<!-- 이벤트 상세보기 -->
+  	<select id="event_detail" parameterType="java.util.Map" resultType="com.jj.vo.EventVo">
+  		select * from event where idx = #{idx};
+  	</select>
+  	
+  	<!-- 이벤트 글 삭제 -->
+  	<delete id="event_delete" parameterType="java.util.Map">
+  		delete from event where idx= #{idx};
+  	</delete>
+  	
+  	<!-- 이벤트 내용 -->
+  	<select id="event_con" resultType="String">
+		SELECT con FROM event where idx = #{idx};
+	</select>
+</mapper>

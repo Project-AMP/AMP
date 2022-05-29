@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+/* .top_banner{
+	border: 1px solid black;
+	width: 900px;
+	height: 300px;
+	
+	margin: auto;
+	margin-top: 10px;
+	margin-bottom: 10px;
+} */
+.main_banner{
+	border: 1px solid red;
+	width: 900px;
+	height: 500px;
+	
+	margin: auto;
+	margin-top: 100px;
+}
+
+.review{
+	border: 1px solid red;
+	width: 900px;
+	height: 400px;
+	
+	margin: auto;
+	margin-top: 100px;
+}
+
+.side_bar{
+	border: 1px solid blue;
+	width : 100px;
+	height : 400px;
+	margin-right : 50px;
+	position:fixed;
+	top: 430px;
+	right: 50px;
+}
+
+li {
+	list-style: none 
+}
