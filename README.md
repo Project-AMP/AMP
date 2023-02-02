@@ -20,7 +20,7 @@ Academy Management Program - 학원 관리 프로그램
 ![슬라이드7](https://user-images.githubusercontent.com/81818730/144225681-e8dc1cc0-690c-4fd6-ad27-d5cef2d9af44.PNG)
 ![슬라이드8](https://user-images.githubusercontent.com/81818730/144225685-42e5aa39-4ecc-4ea0-a423-29e301ab1484.PNG)
 
-## 역활 분담
+## 역할 분담
 ![슬라이드9](https://user-images.githubusercontent.com/81818730/144225686-bfa8a01c-5fb5-4dd0-b6b4-9319a1052193.PNG)
 
 ## 개발 일정
