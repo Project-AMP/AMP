@@ -4,7 +4,7 @@ Academy Management Program - 학원 관리 프로그램
 제작 기간 : 2020/12 ~ 2021/11 
 
 ## Team Members
-* [ymiru0324(김용민)](https://github.com/ymiru0324)   
+* [ymiru0324(김용민)](https://github.com/ymiru0324)    
 * [leetaehyeon123(이태현)](https://github.com/leetaehyeon123)   
 * [JIN-RYEOL(김진렬)](https://github.com/JIN-RYEOL)   
 
